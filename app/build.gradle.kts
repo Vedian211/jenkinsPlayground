@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -7,6 +9,15 @@ plugins {
 android {
     namespace = "com.example.jenkinsplayground"
     compileSdk = 36
+
+    signingConfigs {
+        create("release") {
+            storeFile = file(System.getenv("KEYSTORE_PATH") ?: "keystore.jks")
+            storePassword = System.getenv("KEYSTORE_PASSWORD") ?: "defaultPass"
+            keyAlias = System.getenv("KEY_ALIAS") ?: "alias"
+            keyPassword = System.getenv("KEY_PASSWORD") ?: "aliasPass"
+        }
+    }
 
     defaultConfig {
         applicationId = "com.example.jenkinsplayground"
@@ -63,12 +74,14 @@ android {
 
         release {
             isMinifyEnabled = true
+            signingConfig = signingConfigs.getByName("release")
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
         }
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
@@ -113,6 +126,15 @@ dependencies {
 }
 
 fun checkEnvironment(paramKey: String): String {
-    val param = System.getenv(paramKey) ?: throw GradleException("System environment variable '$paramKey' is not set.")
+    val localProperties = Properties().apply {
+        val localPropertiesFile = rootProject.file("local.properties")
+        if (localPropertiesFile.exists()) {
+            localPropertiesFile.inputStream().use { load(it) }
+        }
+    }
+    val param =
+        System.getenv(paramKey)
+            ?: localProperties.getProperty(paramKey)
+            ?: throw GradleException("System environment variable '$paramKey' is not set.")
     return param
 }
