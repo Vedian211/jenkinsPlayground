@@ -8,7 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
-import com.example.companyA.CompanyATheme
+import com.example.companyB.CompanyBTheme
 import com.example.core.HttpClient
 import com.example.core.LocalHttpClient
 import com.example.jenkinsplayground.screens.MapScreen
@@ -23,7 +23,7 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             CompositionLocalProvider(LocalHttpClient provides httpClient) {
-                CompanyATheme {
+                CompanyBTheme {
                     Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                         MapScreen(innerPadding, mapManager)
                     }
