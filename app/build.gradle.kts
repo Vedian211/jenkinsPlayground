@@ -26,8 +26,8 @@ android {
             applicationIdSuffix = ".companyA"
             versionNameSuffix = "-companyA"
 
-            buildConfigField("String", "BASE_URL", "\"https://api.companyA.com/\"")
-            buildConfigField("String", "API_KEY", "\"COMPANY_A_API_KEY\"")
+            buildConfigField("String", "BASE_URL", "\"${checkEnvironment("COMPANY_A_BASE_URL")}\"")
+            buildConfigField("String", "API_KEY", "\"${checkEnvironment("COMPANY_A_API_KEY")}\"")
             buildConfigField("String", "COMPANY", "\"COMPANY_A\"")
         }
 
@@ -36,8 +36,8 @@ android {
             applicationIdSuffix = ".companyB"
             versionNameSuffix = "-companyB"
 
-            buildConfigField("String", "BASE_URL", "\"https://api.companyB.com/\"")
-            buildConfigField("String", "API_KEY", "\"COMPANY_B_API_KEY\"")
+            buildConfigField("String", "BASE_URL", "\"${checkEnvironment("COMPANY_B_BASE_URL")}\"")
+            buildConfigField("String", "API_KEY", "\"${checkEnvironment("COMPANY_B_API_KEY")}\"")
             buildConfigField("String", "COMPANY", "\"COMPANY_B\"")
         }
 
@@ -110,4 +110,9 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+}
+
+fun checkEnvironment(paramKey: String): String {
+    val param = System.getenv(paramKey) ?: throw GradleException("System environment variable '$paramKey' is not set.")
+    return param
 }
